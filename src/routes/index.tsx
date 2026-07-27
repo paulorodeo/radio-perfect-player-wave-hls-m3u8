@@ -1,24 +1,75 @@
 import { createFileRoute } from "@tanstack/react-router";
+import bootstrapCss from "bootstrap/dist/css/bootstrap.min.css?url";
+import playerCss from "../styles/original-player.css?url";
+import { RadioProvider } from "../components/radio/RadioContext";
+import {
+  CountryNews,
+  CoverLightbox,
+  DesktopNavigation,
+  DynamicBackground,
+  MobileHeader,
+  MobileMenu,
+  PlayerCard,
+  RecentlyPlayed,
+} from "../components/radio/PlayerPieces";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Country Hits Nashville Radio | 100% Commercial Free" },
+    ],
+    links: [
+      { rel: "stylesheet", href: bootstrapCss },
+      { rel: "stylesheet", href: playerCss },
+      {
+        rel: "preload",
+        as: "image",
+        href: "https://country.fazenda.rodeo/player/logo.webp",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "https://country.fazenda.rodeo/player/play.webp",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "https://country.fazenda.rodeo/player/pause.webp",
+      },
+    ],
+    scripts: [
+      {
+        src: "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js",
+        defer: true,
+      },
+    ],
+  }),
+  component: RadioPage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function RadioPage() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <RadioProvider>
+      <CoverLightbox />
+      <DynamicBackground />
+      <MobileHeader />
+      <MobileMenu />
+      <div className="main-container">
+        <CountryNews />
+        <div
+          className="side-column"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            flexGrow: 1,
+          }}
+        >
+          <DesktopNavigation />
+          <PlayerCard />
+        </div>
+        <RecentlyPlayed />
+      </div>
+    </RadioProvider>
   );
 }
