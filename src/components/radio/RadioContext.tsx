@@ -301,8 +301,8 @@ export function RadioProvider({ children }: { children: ReactNode }) {
 
   return (
     <RadioCtx.Provider value={value}>
-      <audio id="stream" ref={audioRef} crossOrigin="anonymous" preload="none" />
       {children}
+      <audio id="stream" ref={audioRef} crossOrigin="anonymous" preload="none" />
     </RadioCtx.Provider>
   );
 }
