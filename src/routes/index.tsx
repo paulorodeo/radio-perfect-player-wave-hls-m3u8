@@ -21,7 +21,7 @@ export const Route = createFileRoute("/")({
       { title: "Country Hits Nashville Radio | 100% Commercial Free" },
     ],
     links: [
-      { rel: "stylesheet", href: bootstrapCss },
+      { rel: "stylesheet", href: BOOTSTRAP_CSS },
       { rel: "stylesheet", href: playerCss },
       {
         rel: "preload",
