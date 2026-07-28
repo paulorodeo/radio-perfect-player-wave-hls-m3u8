@@ -1,8 +1,10 @@
 .magazine-section {
-  background: #050403;
+  background: rgba(5, 4, 3, 0.72);
   color: #F5F2EA;
   padding: 72px 0 96px;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .magazine-section * {
