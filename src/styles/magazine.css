@@ -1,0 +1,151 @@
+.magazine-section {
+  background: #050403;
+  color: #F5F2EA;
+  padding: 72px 0 96px;
+  width: 100%;
+}
+
+.magazine-section * {
+  box-sizing: border-box;
+}
+
+.magazine-section .magazine-container {
+  max-width: 1220px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.magazine-section .magazine-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.magazine-section .magazine-lead {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.magazine-section .magazine-lead-image {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+}
+
+.magazine-section .magazine-category {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #C6A04B;
+  margin: 0;
+}
+
+.magazine-section .magazine-headline {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.25rem, 4vw, 4rem);
+  line-height: 1.05;
+  font-weight: 700;
+  color: #F5F2EA;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.magazine-section .magazine-excerpt {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #C8BDA9;
+  margin: 0;
+  max-width: 62ch;
+}
+
+.magazine-section .magazine-meta {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #C6A04B;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin: 4px 0 0;
+}
+
+.magazine-section .magazine-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 600;
+}
+
+.magazine-section .magazine-meta span + span::before {
+  content: "·";
+  color: #C6A04B;
+  margin-right: 14px;
+}
+
+.magazine-section .magazine-side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.magazine-section .magazine-side-story {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.magazine-section .magazine-side-image {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 18px;
+  display: block;
+}
+
+.magazine-section .magazine-side-headline {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  line-height: 1.15;
+  font-weight: 700;
+  color: #F5F2EA;
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+@media (max-width: 1024px) {
+  .magazine-section .magazine-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .magazine-section .magazine-side-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 700px) {
+  .magazine-section {
+    padding: 48px 0 64px;
+  }
+  .magazine-section .magazine-container {
+    padding-inline: 20px;
+  }
+  .magazine-section .magazine-side-column {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .magazine-section .magazine-lead-image {
+    aspect-ratio: 3 / 2;
+    border-radius: 18px;
+  }
+}
