@@ -14,6 +14,7 @@ import {
   PlayerCard,
   RecentlyPlayed,
 } from "../components/radio/PlayerPieces";
+import { MagazineSection } from "../components/magazine/MagazineSection";
 
 export const Route = createFileRoute("/")({
   head: () => ({
