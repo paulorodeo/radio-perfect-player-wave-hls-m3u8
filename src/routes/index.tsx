@@ -19,7 +19,7 @@ import { MagazineSection } from "../components/magazine/MagazineSection";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "I Love Sertanejo | 100% Commercial Free Radio" },
+      { title: "Honky Tonk | 100% Commercial Free Radio" },
     ],
     links: [
       { rel: "stylesheet", href: BOOTSTRAP_CSS },
