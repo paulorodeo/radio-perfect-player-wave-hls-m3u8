@@ -19,7 +19,7 @@ import { MagazineSection } from "../components/magazine/MagazineSection";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Country Hits Nashville Radio | 100% Commercial Free" },
+      { title: "I Love Sertanejo | 100% Commercial Free Radio" },
     ],
     links: [
       { rel: "stylesheet", href: BOOTSTRAP_CSS },

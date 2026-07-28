@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "I Love Sertanejo | 100% Commercial Free Radio" },
+      { name: "description", content: "Pixel Perfect Player migrates an HTML page to a React + TypeScript application, preserving all original visual and functional aspects." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "I Love Sertanejo | 100% Commercial Free Radio" },
+      { property: "og:description", content: "Pixel Perfect Player migrates an HTML page to a React + TypeScript application, preserving all original visual and functional aspects." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "I Love Sertanejo | 100% Commercial Free Radio" },
+      { name: "twitter:description", content: "Pixel Perfect Player migrates an HTML page to a React + TypeScript application, preserving all original visual and functional aspects." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6a8804c5-8612-4066-8b7c-e5f51e8a25ec/id-preview-3595d2fe--b64b573d-b174-45eb-955a-2e02916c6163.lovable.app-1785229986309.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6a8804c5-8612-4066-8b7c-e5f51e8a25ec/id-preview-3595d2fe--b64b573d-b174-45eb-955a-2e02916c6163.lovable.app-1785229986309.png" },
     ],
     links: [
       {
