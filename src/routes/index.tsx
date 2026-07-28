@@ -73,6 +73,7 @@ function RadioPage() {
         </div>
         <RecentlyPlayed />
       </div>
+      <MagazineSection />
     </RadioProvider>
   );
 }
