@@ -6,8 +6,7 @@ import { StickyEqualizer } from "./StickyEqualizer";
 const STICKY_SCROLL_THRESHOLD = 100;
 
 export function StickyPlayer() {
-  const { nowPlaying, playingNext, isPlaying, togglePlay, lightboxSrc, openLightbox } =
-    useRadio();
+  const { nowPlaying, playingNext, isPlaying, togglePlay, lightboxSrc, openLightbox } = useRadio();
   const [stickyVisible, setStickyVisible] = useState(false);
 
   useEffect(() => {

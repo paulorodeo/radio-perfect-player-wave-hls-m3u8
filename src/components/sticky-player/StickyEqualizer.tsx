@@ -113,11 +113,6 @@ export function StickyEqualizer({ isVisible }: StickyEqualizerProps) {
   }, [analyserRef, analyserReady, isPlaying, isVisible]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="sticky-radio-eq"
-      aria-hidden="true"
-      role="presentation"
-    />
+    <canvas ref={canvasRef} className="sticky-radio-eq" aria-hidden="true" role="presentation" />
   );
 }
