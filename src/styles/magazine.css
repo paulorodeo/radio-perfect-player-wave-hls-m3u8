@@ -137,7 +137,7 @@
 
 @media (max-width: 700px) {
   .magazine-section {
-    padding: 48px 0 64px;
+    padding: 48px 0 120px;
   }
   .magazine-section .magazine-container {
     padding-inline: 20px;
