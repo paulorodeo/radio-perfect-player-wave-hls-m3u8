@@ -207,8 +207,17 @@
   .sticky-radio-player {
     gap: 12px;
   }
-  .sticky-radio-player .sticky-radio-station {
+  .sticky-radio-player .sticky-radio-next {
     padding: 0 12px;
+    flex-basis: 190px;
+  }
+  .sticky-radio-player .sticky-radio-eq {
+    width: 90px;
+    height: 28px;
+  }
+  .sticky-radio-player .sticky-radio-next-art {
+    width: 26px;
+    height: 26px;
   }
 }
 
@@ -216,13 +225,38 @@
   .sticky-radio-player {
     width: calc(100vw - 24px);
     bottom: calc(12px + env(safe-area-inset-bottom));
-    min-height: 66px;
     padding: 10px 12px;
-    gap: 10px;
+    gap: 8px 10px;
+    flex-wrap: wrap;
   }
-  .sticky-radio-player .sticky-radio-station,
+  .sticky-radio-player .sticky-radio-track {
+    order: 1;
+    flex: 1 1 auto;
+  }
+  .sticky-radio-player .sticky-radio-actions {
+    order: 2;
+  }
+  .sticky-radio-player .sticky-radio-eq {
+    order: 3;
+    width: 64px;
+    height: 24px;
+  }
+  .sticky-radio-player .sticky-radio-next {
+    order: 4;
+    flex: 1 1 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    border: none;
+  }
+  .sticky-radio-player .sticky-radio-next-art,
   .sticky-radio-player .sticky-radio-top {
     display: none;
+  }
+  .sticky-radio-player .sticky-radio-next-body {
+    min-width: 0;
+    flex: 1 1 auto;
   }
   .sticky-radio-player .sticky-radio-art {
     width: 42px;
