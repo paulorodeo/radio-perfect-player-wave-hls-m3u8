@@ -73,6 +73,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     artist: "FAZENDA RODEO",
     art: "",
   });
+  const [playingNext, setPlayingNext] = useState<PlayingNext | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
   const [newsError, setNewsError] = useState(false);
