@@ -1,22 +1,33 @@
 import { useEffect, useState } from "react";
 import "../../styles/sticky-player.css";
 import { LOGO_URL, PAUSE_URL, PLAY_URL, useRadio } from "../radio/RadioContext";
+import { StickyEqualizer } from "./StickyEqualizer";
+
+const STICKY_SCROLL_THRESHOLD = 100;
 
 export function StickyPlayer() {
-  const { nowPlaying, isPlaying, togglePlay, lightboxSrc } = useRadio();
+  const { nowPlaying, playingNext, isPlaying, togglePlay, lightboxSrc, openLightbox } =
+    useRadio();
   const [stickyVisible, setStickyVisible] = useState(false);
 
   useEffect(() => {
-    const player = document.querySelector(".player-card");
-    if (!player) return;
+    let frameId: number | null = null;
 
-    const observer = new IntersectionObserver(([entry]) => {
-      const playerPassedAbove = !entry.isIntersecting && entry.boundingClientRect.bottom < 0;
-      setStickyVisible(playerPassedAbove);
-    });
+    const updateVisibility = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = null;
+        setStickyVisible(window.scrollY >= STICKY_SCROLL_THRESHOLD);
+      });
+    };
 
-    observer.observe(player);
-    return () => observer.disconnect();
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", updateVisibility);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   const isVisible = stickyVisible && !lightboxSrc;
@@ -29,17 +40,37 @@ export function StickyPlayer() {
       className={`sticky-radio-player${isVisible ? " sticky-radio-player--visible" : ""}`}
     >
       <div className="sticky-radio-track">
-        <img className="sticky-radio-art" src={art} alt="" />
+        <button
+          type="button"
+          className="sticky-radio-art-button"
+          onClick={() => openLightbox(nowPlaying.art)}
+          aria-label="Ampliar capa da música atual"
+          tabIndex={isVisible ? 0 : -1}
+        >
+          <img className="sticky-radio-art" src={art} alt="" />
+        </button>
         <div className="sticky-radio-info">
           <p className="sticky-radio-title">{nowPlaying.title}</p>
           <p className="sticky-radio-artist">{nowPlaying.artist}</p>
         </div>
       </div>
 
-      <div className="sticky-radio-station">
-        <span className="sticky-radio-status">ON AIR</span>
-        <span className="sticky-radio-station-name">COUNTRY HITS</span>
-      </div>
+      <StickyEqualizer isVisible={isVisible} />
+
+      {playingNext ? (
+        <div className="sticky-radio-next" aria-live="polite">
+          <span className="sticky-radio-next-label">A SEGUIR</span>
+          <div className="sticky-radio-next-body">
+            {playingNext.art ? (
+              <img className="sticky-radio-next-art" src={playingNext.art} alt="" />
+            ) : null}
+            <div className="sticky-radio-next-info">
+              <p className="sticky-radio-next-title">{playingNext.title}</p>
+              <p className="sticky-radio-next-artist">{playingNext.artist}</p>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <div className="sticky-radio-actions">
         <button
