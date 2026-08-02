@@ -35,6 +35,7 @@ type Ctx = {
   isPlaying: boolean;
   volume: number;
   nowPlaying: NowPlaying;
+  playingNext: PlayingNext | null;
   history: HistoryItem[];
   news: NewsItem[];
   newsError: boolean;
