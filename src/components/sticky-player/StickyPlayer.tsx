@@ -11,8 +11,7 @@ export function StickyPlayer() {
     if (!player) return;
 
     const observer = new IntersectionObserver(([entry]) => {
-      const playerPassedAbove =
-        !entry.isIntersecting && entry.boundingClientRect.bottom < 0;
+      const playerPassedAbove = !entry.isIntersecting && entry.boundingClientRect.bottom < 0;
       setStickyVisible(playerPassedAbove);
     });
 
