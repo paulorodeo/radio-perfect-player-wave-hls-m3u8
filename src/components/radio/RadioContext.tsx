@@ -21,6 +21,12 @@ export const PAUSE_URL = "https://country.fazenda.rodeo/player/pause.webp";
 const IDLE_DELAY = 4000;
 
 export type NowPlaying = { title: string; artist: string; art: string };
+export type PlayingNext = {
+  title: string;
+  artist: string;
+  art: string;
+  album?: string;
+};
 export type HistoryItem = { song: NowPlaying };
 export type NewsItem = { link: string; title: string; thumb: string };
 
@@ -29,6 +35,7 @@ type Ctx = {
   isPlaying: boolean;
   volume: number;
   nowPlaying: NowPlaying;
+  playingNext: PlayingNext | null;
   history: HistoryItem[];
   news: NewsItem[];
   newsError: boolean;
@@ -66,6 +73,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     artist: "FAZENDA RODEO",
     art: "",
   });
+  const [playingNext, setPlayingNext] = useState<PlayingNext | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
   const [newsError, setNewsError] = useState(false);
@@ -212,6 +220,17 @@ export function RadioProvider({ children }: { children: ReactNode }) {
         if (cancelled) return;
         const s = data.now_playing.song;
         setNowPlaying({ title: s.title, artist: s.artist, art: s.art });
+        const nextSong = data.playing_next?.song;
+        if (nextSong?.title) {
+          setPlayingNext({
+            title: nextSong.title,
+            artist: nextSong.artist,
+            art: nextSong.art,
+            album: nextSong.album,
+          });
+        } else {
+          setPlayingNext(null);
+        }
       } catch (e) {
         console.error("Erro metadados:", e);
       }
@@ -285,6 +304,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     isPlaying,
     volume,
     nowPlaying,
+    playingNext,
     history,
     news,
     newsError,
