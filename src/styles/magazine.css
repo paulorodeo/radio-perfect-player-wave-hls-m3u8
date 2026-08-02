@@ -1,7 +1,7 @@
 .magazine-section {
   background: transparent;
   color: #F5F2EA;
-  padding: 72px 0 96px;
+  padding: 72px 0 140px;
   width: 100%;
   position: relative;
   z-index: 1;
@@ -137,7 +137,7 @@
 
 @media (max-width: 700px) {
   .magazine-section {
-    padding: 48px 0 64px;
+    padding: 48px 0 120px;
   }
   .magazine-section .magazine-container {
     padding-inline: 20px;
