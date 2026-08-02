@@ -21,6 +21,12 @@ export const PAUSE_URL = "https://country.fazenda.rodeo/player/pause.webp";
 const IDLE_DELAY = 4000;
 
 export type NowPlaying = { title: string; artist: string; art: string };
+export type PlayingNext = {
+  title: string;
+  artist: string;
+  art: string;
+  album?: string;
+};
 export type HistoryItem = { song: NowPlaying };
 export type NewsItem = { link: string; title: string; thumb: string };
 
