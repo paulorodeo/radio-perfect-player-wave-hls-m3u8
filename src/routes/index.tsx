@@ -15,6 +15,7 @@ import {
   RecentlyPlayed,
 } from "../components/radio/PlayerPieces";
 import { MagazineSection } from "../components/magazine/MagazineSection";
+import { StickyPlayer } from "../components/sticky-player/StickyPlayer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -74,6 +75,7 @@ function RadioPage() {
         <RecentlyPlayed />
       </div>
       <MagazineSection />
+      <StickyPlayer />
     </RadioProvider>
   );
 }
