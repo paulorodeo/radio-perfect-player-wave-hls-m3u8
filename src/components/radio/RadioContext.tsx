@@ -293,6 +293,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     isPlaying,
     volume,
     nowPlaying,
+    playingNext,
     history,
     news,
     newsError,
