@@ -220,6 +220,17 @@ export function RadioProvider({ children }: { children: ReactNode }) {
         if (cancelled) return;
         const s = data.now_playing.song;
         setNowPlaying({ title: s.title, artist: s.artist, art: s.art });
+        const nextSong = data.playing_next?.song;
+        if (nextSong?.title) {
+          setPlayingNext({
+            title: nextSong.title,
+            artist: nextSong.artist,
+            art: nextSong.art,
+            album: nextSong.album,
+          });
+        } else {
+          setPlayingNext(null);
+        }
       } catch (e) {
         console.error("Erro metadados:", e);
       }
