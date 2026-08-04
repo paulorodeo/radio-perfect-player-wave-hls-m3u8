@@ -235,10 +235,14 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     const audio = audioRef.current;
     if (!audio) return;
     const onError = () => {
+      // ignore the synthetic error fired when we clear the src during a switch
+      if (!audio.currentSrc && !audio.getAttribute("src")) return;
+      if (audio.error?.code === MediaError.MEDIA_ERR_ABORTED) return;
       setStreamError(UNAVAILABLE_MESSAGE);
       setIsPlaying(false);
       isPlayingRef.current = false;
     };
+
     audio.addEventListener("error", onError);
     return () => audio.removeEventListener("error", onError);
   }, []);
