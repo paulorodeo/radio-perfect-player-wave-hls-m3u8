@@ -167,7 +167,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
             if (generationRef.current !== generation) return;
             instance.destroy();
             if (hlsRef.current === instance) hlsRef.current = null;
-            setStreamError(UNAVAILABLE_MESSAGE);
+            console.error("DBG hls fatal", dataErr.type, dataErr.details); setStreamError(UNAVAILABLE_MESSAGE);
             setIsPlaying(false);
             isPlayingRef.current = false;
           });
@@ -181,7 +181,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
           audio.src = target.streamUrl;
           audio.load();
         } else {
-          setStreamError(UNAVAILABLE_MESSAGE);
+          console.error("DBG no hls support"); setStreamError(UNAVAILABLE_MESSAGE);
           return;
         }
       } else {
@@ -242,7 +242,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
       if (Date.now() < errorSuppressUntilRef.current) return;
       if (!audio.currentSrc && !audio.getAttribute("src")) return;
       if (audio.error?.code === MediaError.MEDIA_ERR_ABORTED) return;
-      setStreamError(UNAVAILABLE_MESSAGE);
+      console.error("DBG media error", audio.error?.code); setStreamError(UNAVAILABLE_MESSAGE);
       setIsPlaying(false);
       isPlayingRef.current = false;
     };
