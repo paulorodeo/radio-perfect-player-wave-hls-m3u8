@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "../../styles/sticky-player.css";
 import { LOGO_URL, PAUSE_URL, PLAY_URL, useRadio } from "../radio/RadioContext";
 import { StickyEqualizer } from "./StickyEqualizer";
+import { StationDropdown } from "./StationDropdown";
 
 const STICKY_SCROLL_THRESHOLD = 100;
 
@@ -70,6 +71,8 @@ export function StickyPlayer() {
           </div>
         </div>
       ) : null}
+
+      <StationDropdown isVisible={isVisible} />
 
       <div className="sticky-radio-actions">
         <button

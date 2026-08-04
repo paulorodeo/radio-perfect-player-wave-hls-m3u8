@@ -1,5 +1,6 @@
 import { LOGO_URL, PAUSE_URL, PLAY_URL, useRadio } from "./RadioContext";
 import { WaveVisualizer } from "./WaveVisualizer";
+import { StationSegmented, StationStatus } from "./StationSelector";
 
 export function DynamicBackground() {
   const { nowPlaying } = useRadio();
@@ -223,6 +224,7 @@ export function DesktopNavigation() {
 
 export function PlayerCard() {
   const {
+    station,
     nowPlaying,
     isPlaying,
     hideUI,
@@ -258,7 +260,7 @@ export function PlayerCard() {
       </div>
 
       <h1 className="seo-h1">
-        <a href="https://country.fazenda.rodeo">Country Hits Radio Nashville</a>
+        <a href="https://country.fazenda.rodeo">{station.fullName}</a>
       </h1>
 
       <div
@@ -293,6 +295,9 @@ export function PlayerCard() {
         <h2 id="titulo">{nowPlaying.title}</h2>
         <p id="artista">{nowPlaying.artist}</p>
       </div>
+
+      <StationSegmented />
+      <StationStatus />
 
       <footer>© 2026 - BY PAULO RODEO</footer>
     </div>
