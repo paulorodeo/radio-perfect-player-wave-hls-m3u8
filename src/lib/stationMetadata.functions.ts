@@ -142,11 +142,12 @@ export const fetchIcyMetadata = createServerFn({ method: "GET" })
 
       const reader = res.body.getReader();
       let skipped = 0;
-      let pending = new Uint8Array(0);
+      let pending: Uint8Array<ArrayBuffer> = new Uint8Array(0);
 
-      const pull = async (): Promise<Uint8Array | null> => {
+      const pull = async (): Promise<Uint8Array<ArrayBuffer> | null> => {
         const { value, done } = await reader.read();
-        return done ? null : (value ?? new Uint8Array(0));
+        if (done) return null;
+        return new Uint8Array(value ?? new Uint8Array(0));
       };
 
       // skip audio payload up to the first metadata block
@@ -175,7 +176,7 @@ export const fetchIcyMetadata = createServerFn({ method: "GET" })
       }
 
       const blockLength = pending[0] * 16;
-      let meta = pending.slice(1);
+      let meta: Uint8Array<ArrayBuffer> = pending.slice(1);
       while (meta.length < blockLength) {
         const chunk = await pull();
         if (!chunk) break;
