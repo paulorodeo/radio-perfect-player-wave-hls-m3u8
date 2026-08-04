@@ -8,9 +8,18 @@ import {
   type ReactNode,
 } from "react";
 import type Hls from "hls.js";
+import {
+  DEFAULT_STATION_ID,
+  getStation,
+  stationPlaceholder,
+  type StationConfig,
+} from "../../data/stations";
+import {
+  fetchIcyMetadata,
+  fetchTritonMetadata,
+  resolveArtwork,
+} from "../../lib/stationMetadata.functions";
 
-const STREAM_URL = "https://live.fazenda.rodeo/hls/country/live.m3u8";
-const NOWPLAYING_URL = "https://live.fazenda.rodeo/api/nowplaying/country";
 const WP_URL =
   "https://country.fazenda.rodeo/wp-json/wp/v2/posts?_embed&per_page=7&categories=26";
 
@@ -19,6 +28,10 @@ export const PLAY_URL = "https://country.fazenda.rodeo/player/play.webp";
 export const PAUSE_URL = "https://country.fazenda.rodeo/player/pause.webp";
 
 const IDLE_DELAY = 4000;
+const STORAGE_KEY = "selectedStationId";
+const LIVE_LABEL = "Programação ao vivo";
+const UNAVAILABLE_MESSAGE =
+  "Esta rádio não está disponível na sua região ou está temporariamente fora do ar.";
 
 export type NowPlaying = { title: string; artist: string; art: string };
 export type PlayingNext = {
@@ -48,6 +61,13 @@ type Ctx = {
   openLightbox: (src: string) => void;
   closeLightbox: () => void;
   lightboxSrc: string | null;
+  station: StationConfig;
+  selectedStationId: string;
+  selectStation: (stationId: string) => Promise<void>;
+  streamError: string | null;
+  retryStation: () => void;
+  fallbackStationId: string | null;
+  goToFallbackStation: () => void;
 };
 
 const RadioCtx = createContext<Ctx | null>(null);
@@ -58,6 +78,14 @@ export function useRadio() {
   return c;
 }
 
+function idleTrack(station: StationConfig): NowPlaying {
+  return {
+    title: station.fullName,
+    artist: LIVE_LABEL,
+    art: stationPlaceholder(station),
+  };
+}
+
 export function RadioProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
@@ -65,6 +93,12 @@ export function RadioProvider({ children }: { children: ReactNode }) {
   const mediaSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const generationRef = useRef(0);
+  const errorSuppressUntilRef = useRef(0);
+  const lastWorkingRef = useRef<string>(DEFAULT_STATION_ID);
+
+  const [selectedStationId, setSelectedStationId] = useState(DEFAULT_STATION_ID);
+  const station = getStation(selectedStationId);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolumeState] = useState(0.8);
@@ -80,51 +114,13 @@ export function RadioProvider({ children }: { children: ReactNode }) {
   const [analyserReady, setAnalyserReady] = useState(false);
   const [hideUI, setHideUI] = useState(false);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [streamError, setStreamError] = useState<string | null>(null);
+  const [fallbackStationId, setFallbackStationId] = useState<string | null>(null);
 
   const isPlayingRef = useRef(isPlaying);
   useEffect(() => {
     isPlayingRef.current = isPlaying;
   }, [isPlaying]);
-
-  // --- HLS init (idempotent, Strict-Mode-safe) ---
-  useEffect(() => {
-    let cancelled = false;
-    let instance: Hls | null = null;
-
-    (async () => {
-      const mod = await import("hls.js");
-      const HlsCtor = mod.default;
-      if (cancelled || !audioRef.current) return;
-      const audio = audioRef.current;
-      audio.crossOrigin = "anonymous";
-
-      if (HlsCtor.isSupported()) {
-        instance = new HlsCtor({
-          liveDurationInfinity: true,
-          enableWorker: true,
-          lowLatencyMode: true,
-        });
-        hlsRef.current = instance;
-        instance.loadSource(STREAM_URL);
-        instance.attachMedia(audio);
-      } else if (audio.canPlayType("application/vnd.apple.mpegurl")) {
-        audio.src = STREAM_URL;
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-      if (instance) {
-        instance.destroy();
-        if (hlsRef.current === instance) hlsRef.current = null;
-      }
-    };
-  }, []);
-
-  // volume sync
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume;
-  }, [volume]);
 
   // --- idle timer ---
   const startIdle = useCallback(() => {
@@ -137,6 +133,128 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     if (isPlayingRef.current) startIdle();
   }, [startIdle]);
+
+  // --- single audio graph: attaches a station stream to the one <audio> ---
+  const attachStream = useCallback(
+    async (target: StationConfig, generation: number, autoplay: boolean) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      audio.crossOrigin = "anonymous";
+      let ready: Promise<void> = Promise.resolve();
+
+      errorSuppressUntilRef.current = Date.now() + 1200;
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+      audio.removeAttribute("src");
+      audio.load();
+
+      if (target.streamType === "hls") {
+        const mod = await import("hls.js");
+        if (generationRef.current !== generation) return;
+        const HlsCtor = mod.default;
+        if (HlsCtor.isSupported()) {
+          const instance = new HlsCtor({
+            liveDurationInfinity: true,
+            enableWorker: true,
+            lowLatencyMode: true,
+          });
+          hlsRef.current = instance;
+          instance.on(HlsCtor.Events.ERROR, (_e, dataErr) => {
+            if (!dataErr.fatal) return;
+            if (generationRef.current !== generation) return;
+            instance.destroy();
+            if (hlsRef.current === instance) hlsRef.current = null;
+            setStreamError(UNAVAILABLE_MESSAGE);
+            setIsPlaying(false);
+            isPlayingRef.current = false;
+          });
+          ready = new Promise<void>((resolve) => {
+            instance.on(HlsCtor.Events.MANIFEST_PARSED, () => resolve());
+            setTimeout(resolve, 6000);
+          });
+          instance.loadSource(target.streamUrl);
+          instance.attachMedia(audio);
+        } else if (audio.canPlayType("application/vnd.apple.mpegurl")) {
+          audio.src = target.streamUrl;
+          audio.load();
+        } else {
+          setStreamError(UNAVAILABLE_MESSAGE);
+          return;
+        }
+      } else {
+        audio.src = target.streamUrl;
+        audio.load();
+      }
+
+      if (!autoplay) return;
+      await ready;
+      if (generationRef.current !== generation) return;
+      try {
+        await audio.play();
+        if (generationRef.current !== generation) return;
+        setIsPlaying(true);
+        isPlayingRef.current = true;
+        lastWorkingRef.current = target.id;
+        startIdle();
+      } catch {
+        if (generationRef.current !== generation) return;
+        setIsPlaying(false);
+        isPlayingRef.current = false;
+      }
+    },
+    [startIdle],
+  );
+
+  // --- initial mount: restore selection, never autoplay ---
+  useEffect(() => {
+    const generation = ++generationRef.current;
+    let stored: string | null = null;
+    try {
+      stored = window.localStorage.getItem(STORAGE_KEY);
+    } catch {
+      stored = null;
+    }
+    const initial = stored && getStation(stored).id === stored ? stored : DEFAULT_STATION_ID;
+    const target = getStation(initial);
+    setSelectedStationId(initial);
+    lastWorkingRef.current = initial;
+    void attachStream(target, generation, false);
+
+    return () => {
+      generationRef.current++;
+      errorSuppressUntilRef.current = Date.now() + 1200;
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+    };
+  }, [attachStream]);
+
+  // --- audio element errors ---
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const onError = () => {
+      // ignore synthetic errors fired while we tear down / swap the source
+      if (Date.now() < errorSuppressUntilRef.current) return;
+      if (!audio.currentSrc && !audio.getAttribute("src")) return;
+      if (audio.error?.code === MediaError.MEDIA_ERR_ABORTED) return;
+      setStreamError(UNAVAILABLE_MESSAGE);
+      setIsPlaying(false);
+      isPlayingRef.current = false;
+    };
+
+    audio.addEventListener("error", onError);
+    return () => audio.removeEventListener("error", onError);
+  }, []);
+
+  // volume sync
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume;
+  }, [volume]);
 
   // window listeners for interactions
   useEffect(() => {
@@ -151,12 +269,9 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     };
   }, [resetIdle]);
 
-  // --- togglePlay (consolidated) ---
-  const togglePlay = useCallback(() => {
+  const ensureAudioGraph = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    // init AudioContext + analyser (singleton, gesture)
     if (!audioContextRef.current) {
       const AC =
         window.AudioContext ||
@@ -176,9 +291,25 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     }
     const ac = audioContextRef.current;
     if (ac && ac.state === "suspended") void ac.resume();
+  }, []);
+
+  // --- togglePlay ---
+  const togglePlay = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    ensureAudioGraph();
 
     if (audio.paused) {
-      void audio.play();
+      setStreamError(null);
+      void audio.play().then(
+        () => {
+          lastWorkingRef.current = selectedStationId;
+        },
+        () => {
+          setIsPlaying(false);
+          isPlayingRef.current = false;
+        },
+      );
       setIsPlaying(true);
       isPlayingRef.current = true;
       startIdle();
@@ -189,7 +320,49 @@ export function RadioProvider({ children }: { children: ReactNode }) {
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
       setHideUI(false);
     }
-  }, [startIdle]);
+  }, [ensureAudioGraph, selectedStationId, startIdle]);
+
+  // --- station switching (single source of truth) ---
+  const selectStation = useCallback(
+    async (stationId: string) => {
+      const target = getStation(stationId);
+      if (!target) return;
+
+      const generation = ++generationRef.current;
+      const audio = audioRef.current;
+
+      if (audio && !audio.paused) audio.pause();
+      setIsPlaying(false);
+      isPlayingRef.current = false;
+
+      setSelectedStationId(target.id);
+      setStreamError(null);
+      setFallbackStationId(
+        lastWorkingRef.current !== target.id ? lastWorkingRef.current : null,
+      );
+      setPlayingNext(null);
+      setHistory([]);
+      setNowPlaying(idleTrack(target));
+
+      try {
+        window.localStorage.setItem(STORAGE_KEY, target.id);
+      } catch {
+        /* storage unavailable */
+      }
+
+      ensureAudioGraph();
+      await attachStream(target, generation, true);
+    },
+    [attachStream, ensureAudioGraph],
+  );
+
+  const retryStation = useCallback(() => {
+    void selectStation(selectedStationId);
+  }, [selectStation, selectedStationId]);
+
+  const goToFallbackStation = useCallback(() => {
+    void selectStation(fallbackStationId ?? DEFAULT_STATION_ID);
+  }, [fallbackStationId, selectStation]);
 
   const setVolume = useCallback(
     (v: number) => {
@@ -210,62 +383,116 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     document.body.style.overflow = "auto";
   }, []);
 
-  // --- Now Playing polling ---
+  // --- metadata polling, scoped to the selected station ---
   useEffect(() => {
+    const target = getStation(selectedStationId);
+    const generation = generationRef.current;
     let cancelled = false;
-    async function loadMeta() {
-      try {
-        const r = await fetch(NOWPLAYING_URL);
-        const data = await r.json();
-        if (cancelled) return;
-        const s = data.now_playing.song;
-        setNowPlaying({ title: s.title, artist: s.artist, art: s.art });
-        const nextSong = data.playing_next?.song;
-        if (nextSong?.title) {
-          setPlayingNext({
-            title: nextSong.title,
-            artist: nextSong.artist,
-            art: nextSong.art,
-            album: nextSong.album,
-          });
-        } else {
-          setPlayingNext(null);
-        }
-      } catch (e) {
-        console.error("Erro metadados:", e);
-      }
-    }
-    loadMeta();
-    const id = setInterval(loadMeta, 15000);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, []);
+    let controller: AbortController | null = null;
+    const stale = () => cancelled || generationRef.current !== generation;
 
-  // --- History polling ---
-  useEffect(() => {
-    let cancelled = false;
-    async function loadHistory() {
+    async function loadFazenda() {
+      if (!target.metadataUrl) return;
+      controller?.abort();
+      controller = new AbortController();
       try {
-        const r = await fetch(NOWPLAYING_URL);
+        const r = await fetch(target.metadataUrl, { signal: controller.signal });
+        if (!r.ok) throw new Error(String(r.status));
         const data = await r.json();
-        if (cancelled) return;
+        if (stale()) return;
+        const s = data.now_playing.song;
+        setNowPlaying({
+          title: s.title || target.fullName,
+          artist: s.artist || LIVE_LABEL,
+          art: s.art || stationPlaceholder(target),
+        });
+        const nextSong = data.playing_next?.song;
+        setPlayingNext(
+          nextSong?.title
+            ? {
+                title: nextSong.title,
+                artist: nextSong.artist,
+                art: nextSong.art,
+                album: nextSong.album,
+              }
+            : null,
+        );
         const items: HistoryItem[] = (data.song_history ?? [])
           .slice(0, 7)
           .map((it: { song: NowPlaying }) => ({ song: it.song }));
         setHistory(items);
-      } catch (e) {
-        console.error("Erro histórico:", e);
+      } catch {
+        if (!stale()) setNowPlaying((prev) => (prev.title ? prev : idleTrack(target)));
       }
     }
-    loadHistory();
-    const id = setInterval(loadHistory, 60000);
+
+    async function withArtwork(
+      artist: string | null,
+      title: string | null,
+      provided: string | null,
+    ): Promise<string> {
+      if (provided) return provided;
+      if (artist && title) {
+        try {
+          const res = await resolveArtwork({ data: { artist, title } });
+          if (res.artwork) return res.artwork;
+        } catch {
+          /* resolver unavailable */
+        }
+      }
+      return stationPlaceholder(target);
+    }
+
+    async function loadExternal() {
+      try {
+        const result =
+          target.metadataAdapter === "triton"
+            ? await fetchTritonMetadata({ data: { mountName: target.mountName ?? "" } })
+            : await fetchIcyMetadata({ data: { streamUrl: target.streamUrl } });
+        if (stale()) return;
+
+        if (!result.title && !result.artist) {
+          setNowPlaying(idleTrack(target));
+          setHistory([]);
+          setPlayingNext(null);
+          return;
+        }
+
+        const art = await withArtwork(result.artist, result.title, result.artwork);
+        if (stale()) return;
+        setNowPlaying({
+          title: result.title ?? target.fullName,
+          artist: result.artist ?? LIVE_LABEL,
+          art,
+        });
+        setPlayingNext(null);
+
+        const items = await Promise.all(
+          result.history.slice(0, 7).map(async (track) => ({
+            song: {
+              title: track.title ?? target.fullName,
+              artist: track.artist ?? LIVE_LABEL,
+              art: await withArtwork(track.artist, track.title, track.art),
+            },
+          })),
+        );
+        if (stale()) return;
+        setHistory(items);
+      } catch {
+        if (!stale()) setNowPlaying(idleTrack(target));
+      }
+    }
+
+    const load = target.metadataAdapter === "fazenda" ? loadFazenda : loadExternal;
+    void load();
+    const id = setInterval(() => void load(), 15000);
+
     return () => {
       cancelled = true;
+      controller?.abort();
       clearInterval(id);
     };
-  }, []);
+  }, [selectedStationId]);
 
   // --- WordPress news (once) ---
   useEffect(() => {
@@ -317,6 +544,13 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     openLightbox,
     closeLightbox,
     lightboxSrc,
+    station,
+    selectedStationId,
+    selectStation,
+    streamError,
+    retryStation,
+    fallbackStationId,
+    goToFallbackStation,
   };
 
   return (
