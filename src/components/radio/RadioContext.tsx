@@ -94,6 +94,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const generationRef = useRef(0);
+  const errorSuppressUntilRef = useRef(0);
   const lastWorkingRef = useRef<string>(DEFAULT_STATION_ID);
 
   const [selectedStationId, setSelectedStationId] = useState(DEFAULT_STATION_ID);
@@ -142,6 +143,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
       audio.crossOrigin = "anonymous";
       let ready: Promise<void> = Promise.resolve();
 
+      errorSuppressUntilRef.current = Date.now() + 1200;
       if (hlsRef.current) {
         hlsRef.current.destroy();
         hlsRef.current = null;
@@ -223,6 +225,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
 
     return () => {
       generationRef.current++;
+      errorSuppressUntilRef.current = Date.now() + 1200;
       if (hlsRef.current) {
         hlsRef.current.destroy();
         hlsRef.current = null;
@@ -235,7 +238,8 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     const audio = audioRef.current;
     if (!audio) return;
     const onError = () => {
-      // ignore the synthetic error fired when we clear the src during a switch
+      // ignore synthetic errors fired while we tear down / swap the source
+      if (Date.now() < errorSuppressUntilRef.current) return;
       if (!audio.currentSrc && !audio.getAttribute("src")) return;
       if (audio.error?.code === MediaError.MEDIA_ERR_ABORTED) return;
       setStreamError(UNAVAILABLE_MESSAGE);
