@@ -140,6 +140,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
       if (!audio) return;
 
       audio.crossOrigin = "anonymous";
+      let ready: Promise<void> = Promise.resolve();
 
       if (hlsRef.current) {
         hlsRef.current.destroy();
@@ -168,6 +169,10 @@ export function RadioProvider({ children }: { children: ReactNode }) {
             setIsPlaying(false);
             isPlayingRef.current = false;
           });
+          ready = new Promise<void>((resolve) => {
+            instance.on(HlsCtor.Events.MANIFEST_PARSED, () => resolve());
+            setTimeout(resolve, 6000);
+          });
           instance.loadSource(target.streamUrl);
           instance.attachMedia(audio);
         } else if (audio.canPlayType("application/vnd.apple.mpegurl")) {
@@ -183,6 +188,8 @@ export function RadioProvider({ children }: { children: ReactNode }) {
       }
 
       if (!autoplay) return;
+      await ready;
+      if (generationRef.current !== generation) return;
       try {
         await audio.play();
         if (generationRef.current !== generation) return;
