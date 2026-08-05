@@ -334,6 +334,12 @@
     height: 28px;
     font-size: 12px;
   }
+  .sticky-radio-player--mini .sticky-radio-next-inline {
+    display: none;
+  }
+  .sticky-radio-player--mini .sticky-radio-track {
+    flex: 0 1 auto;
+  }
   .sticky-radio-player--mini .sticky-radio-title {
     max-width: 150px;
   }
