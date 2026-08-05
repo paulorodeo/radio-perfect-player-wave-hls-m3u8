@@ -32,12 +32,15 @@ export function StickyPlayer() {
 
   const isVisible = stickyVisible && !lightboxSrc;
   const art = nowPlaying.art || LOGO_URL;
+  const [minimized, setMinimized] = useState(false);
 
   return (
     <aside
       aria-label="Player da rádio"
       aria-hidden={!isVisible}
-      className={`sticky-radio-player${isVisible ? " sticky-radio-player--visible" : ""}`}
+      className={`sticky-radio-player${isVisible ? " sticky-radio-player--visible" : ""}${
+        minimized ? " sticky-radio-player--mini" : ""
+      }`}
     >
       <div className="sticky-radio-track">
         <button
@@ -52,10 +55,17 @@ export function StickyPlayer() {
         <div className="sticky-radio-info">
           <p className="sticky-radio-title">{nowPlaying.title}</p>
           <p className="sticky-radio-artist">{nowPlaying.artist}</p>
+          {playingNext ? (
+            <p className="sticky-radio-next-inline">
+              <span className="sticky-radio-next-inline-label">A seguir</span>
+              {playingNext.title}
+              {playingNext.artist ? ` — ${playingNext.artist}` : ""}
+            </p>
+          ) : null}
         </div>
       </div>
 
-      <StickyEqualizer isVisible={isVisible} />
+      <StickyEqualizer isVisible={isVisible && !minimized} />
 
       {playingNext ? (
         <div className="sticky-radio-next" aria-live="polite">
@@ -72,7 +82,7 @@ export function StickyPlayer() {
         </div>
       ) : null}
 
-      <StationDropdown isVisible={isVisible} />
+      <StationDropdown isVisible={isVisible && !minimized} />
 
       <div className="sticky-radio-actions">
         <button
@@ -83,6 +93,16 @@ export function StickyPlayer() {
           tabIndex={isVisible ? 0 : -1}
         >
           <img src={isPlaying ? PAUSE_URL : PLAY_URL} alt="" />
+        </button>
+        <button
+          type="button"
+          className="sticky-radio-minimize"
+          onClick={() => setMinimized((v) => !v)}
+          aria-label={minimized ? "Expandir player" : "Minimizar player"}
+          aria-pressed={minimized}
+          tabIndex={isVisible ? 0 : -1}
+        >
+          {minimized ? "▢" : "—"}
         </button>
         <button
           type="button"

@@ -162,11 +162,31 @@
   white-space: nowrap;
 }
 
+.sticky-radio-player .sticky-radio-next-inline {
+  display: none;
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.25;
+  color: rgba(245, 242, 234, 0.62);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sticky-radio-player .sticky-radio-next-inline-label {
+  color: #d9aa3e;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  font-size: 9px;
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+
 .sticky-radio-player .sticky-radio-actions {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .sticky-radio-player .sticky-radio-play {
@@ -186,21 +206,61 @@
   display: block;
 }
 
-.sticky-radio-player .sticky-radio-top {
-  width: 36px;
-  height: 36px;
+.sticky-radio-player .sticky-radio-top,
+.sticky-radio-player .sticky-radio-minimize {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
   border-radius: 50%;
-  border: 1px solid rgba(197, 160, 89, 0.55);
+  border: 1px solid rgba(197, 160, 89, 0.5);
   background: rgba(197, 160, 89, 0.08);
   color: #d9aa3e;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1;
   cursor: pointer;
   transition: background 200ms ease;
 }
 
-.sticky-radio-player .sticky-radio-top:hover {
+.sticky-radio-player .sticky-radio-top:hover,
+.sticky-radio-player .sticky-radio-minimize:hover {
   background: rgba(197, 160, 89, 0.2);
+}
+
+/* --- minimized / compact variant --- */
+.sticky-radio-player--mini {
+  width: auto;
+  max-width: calc(100vw - 24px);
+  min-height: 0;
+  gap: 12px;
+  padding: 8px 10px 8px 12px;
+  border-radius: 999px;
+}
+
+.sticky-radio-player--mini .sticky-radio-next,
+.sticky-radio-player--mini .sticky-radio-next-inline,
+.sticky-radio-player--mini .sticky-radio-eq,
+.sticky-radio-player--mini .station-dropdown,
+.sticky-radio-player--mini .sticky-radio-top,
+.sticky-radio-player--mini .sticky-radio-artist {
+  display: none;
+}
+
+.sticky-radio-player--mini .sticky-radio-art {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+}
+
+.sticky-radio-player--mini .sticky-radio-title {
+  font-size: 13px;
+  max-width: 190px;
+}
+
+.sticky-radio-player--mini .sticky-radio-play {
+  width: 38px;
+  height: 38px;
 }
 
 @media (max-width: 900px) {
@@ -223,48 +283,76 @@
 
 @media (max-width: 640px) {
   .sticky-radio-player {
-    width: calc(100vw - 24px);
+    width: calc(100vw - 20px);
     bottom: calc(12px + env(safe-area-inset-bottom));
     padding: 10px 12px;
-    gap: 8px 10px;
-    flex-wrap: wrap;
+    gap: 10px;
+    flex-wrap: nowrap;
   }
   .sticky-radio-player .sticky-radio-track {
-    order: 1;
-    flex: 1 1 auto;
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 10px;
   }
-  .sticky-radio-player .sticky-radio-actions {
-    order: 2;
-  }
-  .sticky-radio-player .sticky-radio-eq {
-    order: 3;
-    width: 64px;
-    height: 24px;
-  }
-  .sticky-radio-player .sticky-radio-next {
-    order: 4;
-    flex: 1 1 auto;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-    padding: 0;
-    border: none;
-  }
-  .sticky-radio-player .sticky-radio-next-art,
+  /* everything on a single row: the "next track" block collapses into the
+     info column as one truncated line */
+  .sticky-radio-player .sticky-radio-next,
+  .sticky-radio-player .sticky-radio-eq,
   .sticky-radio-player .sticky-radio-top {
     display: none;
   }
-  .sticky-radio-player .sticky-radio-next-body {
-    min-width: 0;
-    flex: 1 1 auto;
+  .sticky-radio-player .sticky-radio-next-inline {
+    display: block;
+  }
+  .sticky-radio-player .station-dropdown {
+    flex: 0 0 auto;
+    max-width: 76px;
+  }
+  .sticky-radio-player .station-dropdown-toggle {
+    max-width: 76px;
+    padding: 6px 7px;
+    font-size: 10px;
+  }
+  .sticky-radio-player .station-dropdown-toggle-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .sticky-radio-player .sticky-radio-art {
+    width: 44px;
+    height: 44px;
+  }
+  .sticky-radio-player .sticky-radio-play {
     width: 42px;
     height: 42px;
   }
-  .sticky-radio-player .sticky-radio-play {
-    width: 44px;
-    height: 44px;
+  .sticky-radio-player .sticky-radio-actions {
+    gap: 6px;
+  }
+  .sticky-radio-player .sticky-radio-minimize {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+  .sticky-radio-player--mini {
+    width: auto;
+  }
+  .sticky-radio-player--mini .sticky-radio-art {
+    width: 34px;
+    height: 34px;
+  }
+  .sticky-radio-player--mini .sticky-radio-play {
+    width: 38px;
+    height: 38px;
+  }
+  .sticky-radio-player--mini .sticky-radio-next-inline {
+    display: none;
+  }
+  .sticky-radio-player--mini .sticky-radio-track {
+    flex: 0 1 auto;
+  }
+  .sticky-radio-player--mini .sticky-radio-title {
+    max-width: 150px;
   }
 }
 
