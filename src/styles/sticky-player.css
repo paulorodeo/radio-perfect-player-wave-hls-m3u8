@@ -290,7 +290,7 @@
     flex-wrap: nowrap;
   }
   .sticky-radio-player .sticky-radio-track {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-width: 0;
     gap: 10px;
   }
@@ -303,6 +303,20 @@
   }
   .sticky-radio-player .sticky-radio-next-inline {
     display: block;
+  }
+  .sticky-radio-player .station-dropdown {
+    flex: 0 0 auto;
+    max-width: 96px;
+  }
+  .sticky-radio-player .station-dropdown-toggle {
+    max-width: 96px;
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  .sticky-radio-player .station-dropdown-toggle-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .sticky-radio-player .sticky-radio-art {
     width: 44px;
