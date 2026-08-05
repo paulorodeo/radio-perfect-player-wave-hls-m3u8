@@ -29,9 +29,9 @@ export const PAUSE_URL = "https://country.fazenda.rodeo/player/pause.webp";
 
 const IDLE_DELAY = 4000;
 const STORAGE_KEY = "selectedStationId";
-const LIVE_LABEL = "Programação ao vivo";
+const LIVE_LABEL = "Live programming";
 const UNAVAILABLE_MESSAGE =
-  "Esta rádio não está disponível na sua região ou está temporariamente fora do ar.";
+  "This station is unavailable in your region or is temporarily off the air.";
 
 export type NowPlaying = { title: string; artist: string; art: string };
 export type PlayingNext = {

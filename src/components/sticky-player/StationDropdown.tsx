@@ -90,7 +90,7 @@ export function StationDropdown({ isVisible }: { isVisible: boolean }) {
           className="station-dropdown-menu"
           id={menuId}
           role="listbox"
-          aria-label="Rádios disponíveis"
+          aria-label="Available stations"
           tabIndex={-1}
           // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
           onKeyDown={onListKeyDown}

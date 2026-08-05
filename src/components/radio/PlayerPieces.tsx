@@ -29,7 +29,7 @@ export function CoverLightbox() {
       onClick={closeLightbox}
     >
       <span className="close-lightbox">×</span>
-      <img id="lightbox-img" src={lightboxSrc ?? ""} alt="Ampliação" />
+      <img id="lightbox-img" src={lightboxSrc ?? ""} alt="Enlarged cover art" />
     </div>
   );
 }
