@@ -306,12 +306,12 @@
   }
   .sticky-radio-player .station-dropdown {
     flex: 0 0 auto;
-    max-width: 96px;
+    max-width: 76px;
   }
   .sticky-radio-player .station-dropdown-toggle {
-    max-width: 96px;
-    padding: 6px 8px;
-    font-size: 11px;
+    max-width: 76px;
+    padding: 6px 7px;
+    font-size: 10px;
   }
   .sticky-radio-player .station-dropdown-toggle-label {
     overflow: hidden;
@@ -327,7 +327,12 @@
     height: 42px;
   }
   .sticky-radio-player .sticky-radio-actions {
-    gap: 8px;
+    gap: 6px;
+  }
+  .sticky-radio-player .sticky-radio-minimize {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
   }
   .sticky-radio-player--mini .sticky-radio-title {
     max-width: 150px;
