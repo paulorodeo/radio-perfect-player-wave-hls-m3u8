@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { RadioProvider } from "../components/radio/RadioContext";
+import { CoverLightbox } from "../components/radio/PlayerPieces";
+import { StickyPlayer } from "../components/sticky-player/StickyPlayer";
 
 function NotFoundComponent() {
   return (
@@ -122,8 +125,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      {/* RadioProvider lives here so audio keeps playing across route changes. */}
+      <RadioProvider>
+        <CoverLightbox />
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <StickyPlayer />
+      </RadioProvider>
     </QueryClientProvider>
   );
 }

@@ -3,10 +3,8 @@ import playerCss from "../styles/original-player.css?url";
 
 const BOOTSTRAP_CSS =
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
-import { RadioProvider } from "../components/radio/RadioContext";
 import {
   CountryNews,
-  CoverLightbox,
   DesktopNavigation,
   DynamicBackground,
   MobileHeader,
@@ -15,7 +13,6 @@ import {
   RecentlyPlayed,
 } from "../components/radio/PlayerPieces";
 import { MagazineSection } from "../components/magazine/MagazineSection";
-import { StickyPlayer } from "../components/sticky-player/StickyPlayer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -53,8 +50,7 @@ export const Route = createFileRoute("/")({
 
 function RadioPage() {
   return (
-    <RadioProvider>
-      <CoverLightbox />
+    <>
       <DynamicBackground />
       <MobileHeader />
       <MobileMenu />
@@ -75,7 +71,6 @@ function RadioPage() {
         <RecentlyPlayed />
       </div>
       <MagazineSection />
-      <StickyPlayer />
-    </RadioProvider>
+    </>
   );
 }
