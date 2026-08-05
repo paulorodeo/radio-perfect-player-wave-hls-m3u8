@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { LOGO_URL, PAUSE_URL, PLAY_URL, useRadio } from "./RadioContext";
 import { WaveVisualizer } from "./WaveVisualizer";
 import { StationSegmented, StationStatus } from "./StationSelector";
@@ -29,7 +30,7 @@ export function CoverLightbox() {
       onClick={closeLightbox}
     >
       <span className="close-lightbox">×</span>
-      <img id="lightbox-img" src={lightboxSrc ?? ""} alt="Ampliação" />
+      <img id="lightbox-img" src={lightboxSrc ?? ""} alt="Enlarged cover art" />
     </div>
   );
 }
@@ -77,12 +78,9 @@ export function MobileMenu() {
             </a>
           </li>
           <li className="nav-item">
-            <a
-              className="nav-link nav-link-custom"
-              href="https://country.fazenda.rodeo/station/radio-country/"
-            >
-              Stream
-            </a>
+            <Link className="nav-link nav-link-custom" to="/blog">
+              Blog
+            </Link>
           </li>
           <li className="nav-item">
             <a
@@ -204,12 +202,9 @@ export function DesktopNavigation() {
         Home
       </a>
       <span className="nav-spacer">|</span>
-      <a
-        href="https://country.fazenda.rodeo/station/radio-country/"
-        className="nav-link-item"
-      >
-        Radio
-      </a>
+      <Link to="/blog" className="nav-link-item">
+        Blog
+      </Link>
       <span className="nav-spacer">|</span>
       <a href="https://tv.fazenda.rodeo/" className="nav-link-item">
         TV

@@ -36,7 +36,7 @@ export function StickyPlayer() {
 
   return (
     <aside
-      aria-label="Player da rádio"
+      aria-label="Radio player"
       aria-hidden={!isVisible}
       className={`sticky-radio-player${isVisible ? " sticky-radio-player--visible" : ""}${
         minimized ? " sticky-radio-player--mini" : ""
@@ -47,7 +47,7 @@ export function StickyPlayer() {
           type="button"
           className="sticky-radio-art-button"
           onClick={() => openLightbox(nowPlaying.art)}
-          aria-label="Ampliar capa da música atual"
+          aria-label="Enlarge current cover art"
           tabIndex={isVisible ? 0 : -1}
         >
           <img className="sticky-radio-art" src={art} alt="" />
@@ -57,7 +57,7 @@ export function StickyPlayer() {
           <p className="sticky-radio-artist">{nowPlaying.artist}</p>
           {playingNext ? (
             <p className="sticky-radio-next-inline">
-              <span className="sticky-radio-next-inline-label">A seguir</span>
+              <span className="sticky-radio-next-inline-label">Up next</span>
               {playingNext.title}
               {playingNext.artist ? ` — ${playingNext.artist}` : ""}
             </p>
@@ -69,7 +69,7 @@ export function StickyPlayer() {
 
       {playingNext ? (
         <div className="sticky-radio-next" aria-live="polite">
-          <span className="sticky-radio-next-label">A SEGUIR</span>
+          <span className="sticky-radio-next-label">UP NEXT</span>
           <div className="sticky-radio-next-body">
             {playingNext.art ? (
               <img className="sticky-radio-next-art" src={playingNext.art} alt="" />
@@ -89,7 +89,7 @@ export function StickyPlayer() {
           type="button"
           className="sticky-radio-play"
           onClick={togglePlay}
-          aria-label={isPlaying ? "Pausar rádio" : "Tocar rádio"}
+          aria-label={isPlaying ? "Pause radio" : "Play radio"}
           tabIndex={isVisible ? 0 : -1}
         >
           <img src={isPlaying ? PAUSE_URL : PLAY_URL} alt="" />
@@ -98,7 +98,7 @@ export function StickyPlayer() {
           type="button"
           className="sticky-radio-minimize"
           onClick={() => setMinimized((v) => !v)}
-          aria-label={minimized ? "Expandir player" : "Minimizar player"}
+          aria-label={minimized ? "Expand player" : "Minimize player"}
           aria-pressed={minimized}
           tabIndex={isVisible ? 0 : -1}
         >
@@ -108,7 +108,7 @@ export function StickyPlayer() {
           type="button"
           className="sticky-radio-top"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Voltar ao topo"
+          aria-label="Back to top"
           tabIndex={isVisible ? 0 : -1}
         >
           ↑
