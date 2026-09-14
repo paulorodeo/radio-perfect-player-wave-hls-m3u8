@@ -17,7 +17,23 @@ import { MagazineSection } from "../components/magazine/MagazineSection";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Honky Tonk | 100% Commercial Free Radio" },
+      { title: "Fazenda Rodeo Radio | Country Music, 100% Sem comerciais" },
+      {
+        name: "description",
+        content:
+          "Ouça Fazenda Rodeo Radio — country music 24h, 100% sem comerciais, com notícias e reportagens do universo country e do rodeio.",
+      },
+      {
+        property: "og:title",
+        content: "Fazenda Rodeo Radio | Country Music, 100% Sem comerciais",
+      },
+      {
+        property: "og:description",
+        content:
+          "Country music 24h, 100% sem comerciais, com notícias do universo country e do rodeio.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: BOOTSTRAP_CSS },

@@ -80,16 +80,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Honky Tonk | 100% Commercial Free Radio" },
-      { name: "description", content: "Pixel Perfect Player migrates an HTML page to a React + TypeScript application, preserving all original visual and functional aspects." },
+      { title: "Fazenda Rodeo Radio | Country Music, 100% Sem comerciais" },
+      { name: "description", content: "Ouça Fazenda Rodeo Radio — country music 24h, 100% sem comerciais, com notícias do universo country e do rodeio." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Honky Tonk | 100% Commercial Free Radio" },
-      { property: "og:description", content: "Pixel Perfect Player migrates an HTML page to a React + TypeScript application, preserving all original visual and functional aspects." },
+      { property: "og:title", content: "Fazenda Rodeo Radio | Country Music, 100% Sem comerciais" },
+      { property: "og:description", content: "Ouça Fazenda Rodeo Radio — country music 24h, 100% sem comerciais, com notícias do universo country e do rodeio." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Honky Tonk | 100% Commercial Free Radio" },
-      { name: "twitter:description", content: "Pixel Perfect Player migrates an HTML page to a React + TypeScript application, preserving all original visual and functional aspects." },
+      { name: "twitter:title", content: "Fazenda Rodeo Radio | Country Music, 100% Sem comerciais" },
+      { name: "twitter:description", content: "Ouça Fazenda Rodeo Radio — country music 24h, 100% sem comerciais, com notícias do universo country e do rodeio." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/GrwEMooPpEOP0udD1nRCdGshhro2/social-images/social-1785231553886-IMG_20241224_032201_479.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/GrwEMooPpEOP0udD1nRCdGshhro2/social-images/social-1785231553886-IMG_20241224_032201_479.webp" },
     ],
@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
