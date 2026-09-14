@@ -74,7 +74,7 @@ export function MobileMenu() {
               className="nav-link nav-link-custom"
               href="https://country.fazenda.rodeo/"
             >
-              Home
+              Início
             </a>
           </li>
           <li className="nav-item">
@@ -95,7 +95,7 @@ export function MobileMenu() {
               className="nav-link nav-link-custom"
               href="https://country.fazenda.rodeo/news/"
             >
-              News
+              Notícias
             </a>
           </li>
           <li className="nav-item">
@@ -105,7 +105,7 @@ export function MobileMenu() {
               target="_blank"
               rel="noreferrer"
             >
-              Contact
+              Contato
             </a>
           </li>
         </ul>
@@ -199,7 +199,7 @@ export function DesktopNavigation() {
       }}
     >
       <a href="https://country.fazenda.rodeo/" className="nav-link-item">
-        Home
+        Início
       </a>
       <span className="nav-spacer">|</span>
       <Link to="/blog" className="nav-link-item">
@@ -211,7 +211,7 @@ export function DesktopNavigation() {
       </a>
       <span className="nav-spacer">|</span>
       <a href="https://country.fazenda.rodeo/news/" className="nav-link-item">
-        News
+        Notícias
       </a>
     </div>
   );
