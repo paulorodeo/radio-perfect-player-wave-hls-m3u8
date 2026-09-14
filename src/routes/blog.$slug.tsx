@@ -84,7 +84,7 @@ function PostPage() {
 
           <div className="blog-card-cover blog-card-cover--lead">
             <span className="blog-cover-label">{post.category}</span>
-            <span className="blog-cover-title">{post.title}</span>
+            <span className="blog-cover-title">{post.tags[0] ?? post.category}</span>
             <span className="blog-cover-brand">{SITE_NAME}</span>
           </div>
 
