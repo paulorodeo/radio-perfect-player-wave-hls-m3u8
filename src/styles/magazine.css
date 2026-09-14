@@ -151,3 +151,80 @@
     border-radius: 18px;
   }
 }
+
+.magazine-section .magazine-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.magazine-section .magazine-topline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid #C6A04B33;
+  padding-bottom: 12px;
+}
+
+.magazine-section .magazine-section-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: #F5F2EA;
+  margin: 0;
+}
+
+.magazine-section .magazine-all-link {
+  color: #C6A04B;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.magazine-section .magazine-cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px;
+  border-radius: 20px;
+  border: 1px solid #C6A04B33;
+  background:
+    radial-gradient(120% 120% at 0% 0%, #2a1d0e 0%, #0c0906 65%),
+    #0c0906;
+}
+
+.magazine-section .magazine-cover--lead {
+  aspect-ratio: 16 / 10;
+}
+
+.magazine-section .magazine-cover--side {
+  aspect-ratio: 3 / 2;
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.magazine-section .magazine-cover-label {
+  color: #C6A04B;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.magazine-section .magazine-cover-title {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #F5F2EA;
+  font-size: clamp(1.1rem, 2.2vw, 2rem);
+  line-height: 1.15;
+}
+
+.magazine-section .magazine-cover-brand {
+  color: #9c8a6d;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}

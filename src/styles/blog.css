@@ -171,3 +171,148 @@
     padding: 32px 0 24px;
   }
 }
+
+/* Capas editoriais (placeholder tipográfico) */
+.blog-card-cover {
+  aspect-ratio: 16 / 7;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 18px;
+  background:
+    radial-gradient(120% 120% at 0% 0%, #2a1d0e 0%, #0c0906 60%),
+    #0c0906;
+  border-bottom: 1px solid #c5a05933;
+}
+
+.blog-card-cover--lead {
+  aspect-ratio: 21 / 6;
+  border-radius: 12px;
+  border: 1px solid #c5a05933;
+}
+
+.blog-cover-label {
+  color: #c5a059;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.blog-cover-title {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #fff;
+  font-size: clamp(18px, 2.4vw, 30px);
+  line-height: 1.15;
+}
+
+.blog-cover-brand {
+  color: #9c8a6d;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.blog-card--lead {
+  margin-bottom: 26px;
+}
+
+.blog-card--lead .blog-card-title {
+  font-size: 28px;
+}
+
+/* Matéria */
+.blog-article {
+  max-width: 760px;
+  margin: 0 auto;
+  padding-top: 40px;
+}
+
+.blog-article-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(30px, 5vw, 46px);
+  line-height: 1.1;
+  color: #fff;
+  margin: 0 0 12px;
+}
+
+.blog-article-meta {
+  color: #c5a059;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 24px;
+}
+
+.blog-summary {
+  border: 1px solid #c5a05933;
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin: 26px 0;
+  background: #0c090699;
+}
+
+.blog-summary-title {
+  color: #c5a059;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.blog-summary ul,
+.blog-sources ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #cbbfae;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.blog-section-heading {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  color: #fff;
+  margin: 30px 0 10px;
+}
+
+.blog-paragraph {
+  color: #cbbfae;
+  font-size: 17px;
+  line-height: 1.75;
+  margin: 0 0 16px;
+}
+
+.blog-cta {
+  border-left: 3px solid #c5a059;
+  padding: 10px 16px;
+  color: #efd8a8;
+  font-size: 16px;
+  margin: 30px 0;
+}
+
+.blog-sources {
+  margin-top: 26px;
+}
+
+.blog-sources a {
+  color: #c5a059;
+}
+
+.blog-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 26px 0;
+}
+
+.blog-tag {
+  border: 1px solid #c5a05944;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #b7ac9d;
+}

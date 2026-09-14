@@ -74,7 +74,7 @@ export function MobileMenu() {
               className="nav-link nav-link-custom"
               href="https://country.fazenda.rodeo/"
             >
-              Home
+              Início
             </a>
           </li>
           <li className="nav-item">
@@ -95,7 +95,7 @@ export function MobileMenu() {
               className="nav-link nav-link-custom"
               href="https://country.fazenda.rodeo/news/"
             >
-              News
+              Notícias
             </a>
           </li>
           <li className="nav-item">
@@ -105,12 +105,12 @@ export function MobileMenu() {
               target="_blank"
               rel="noreferrer"
             >
-              Contact
+              Contato
             </a>
           </li>
         </ul>
         <div className="news-feed-container">
-          <div className="news-header">Latest News</div>
+          <div className="news-header">Últimas Notícias</div>
           <div id="wp-news-feed">
             <NewsList news={news} error={newsError} loading={!newsError && news.length === 0} />
           </div>
@@ -131,13 +131,13 @@ function NewsList({
 }) {
   if (loading) {
     return (
-      <p style={{ fontSize: "12px", color: "#666" }}>Loading country news...</p>
+      <p style={{ fontSize: "12px", color: "#666" }}>Carregando notícias country...</p>
     );
   }
   if (error) {
     return (
       <p style={{ fontSize: "11px", color: "#c5a05955" }}>
-        Country news temporarily unavailable.
+        Notícias country indisponíveis no momento.
       </p>
     );
   }
@@ -161,7 +161,7 @@ function NewsList({
                 style={{ fontSize: "14px", lineHeight: 1.2 }}
                 dangerouslySetInnerHTML={{ __html: post.title }}
               />
-              <p>READ MORE</p>
+              <p>LEIA MAIS</p>
             </div>
           </div>
         </a>
@@ -174,7 +174,7 @@ export function CountryNews() {
   const { news, newsError } = useRadio();
   return (
     <div className="side-column news-desktop">
-      <h2 className="column-title">Country News</h2>
+      <h2 className="column-title">Notícias Country</h2>
       <div id="news-list-desktop">
         <NewsList
           news={news}
@@ -199,7 +199,7 @@ export function DesktopNavigation() {
       }}
     >
       <a href="https://country.fazenda.rodeo/" className="nav-link-item">
-        Home
+        Início
       </a>
       <span className="nav-spacer">|</span>
       <Link to="/blog" className="nav-link-item">
@@ -211,7 +211,7 @@ export function DesktopNavigation() {
       </a>
       <span className="nav-spacer">|</span>
       <a href="https://country.fazenda.rodeo/news/" className="nav-link-item">
-        News
+        Notícias
       </a>
     </div>
   );
@@ -303,7 +303,7 @@ export function RecentlyPlayed() {
   const { history, openLightbox } = useRadio();
   return (
     <div className="side-column">
-      <h2 className="column-title">Recently Played</h2>
+      <h2 className="column-title">Tocadas Recentemente</h2>
       <div id="historico-country">
         {history.map((item, i) => (
           <div
