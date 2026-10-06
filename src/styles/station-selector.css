@@ -166,3 +166,19 @@
     width: 100%;
   }
 }
+
+/* Mobile: menu aberto mais largo, mostrando o nome completo das rádios */
+@media (max-width: 600px) {
+  .sticky-radio-player .station-dropdown-menu {
+    left: auto;
+    right: 0;
+    width: max-content;
+    min-width: 220px;
+    max-width: calc(100vw - 24px);
+  }
+  .sticky-radio-player .station-dropdown-option {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}

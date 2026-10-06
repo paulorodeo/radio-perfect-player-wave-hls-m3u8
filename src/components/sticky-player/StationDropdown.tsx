@@ -116,7 +116,7 @@ export function StationDropdown({ isVisible }: { isVisible: boolean }) {
                           onClick={() => choose(s.id)}
                           onMouseEnter={() => setHighlight(index)}
                         >
-                          {s.shortLabel}
+                          {s.fullName}
                         </button>
                       </li>
                     );

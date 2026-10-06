@@ -1,3 +1,4 @@
+import { coverStyle } from "../../data/postImages";
 import { Link } from "@tanstack/react-router";
 import "../../styles/magazine.css";
 import { featuredPost, secondaryPosts, type Post } from "../../data/posts";
@@ -14,7 +15,7 @@ function MagazineMeta({ story }: { story: Post }) {
 
 function MagazineCover({ story, variant }: { story: Post; variant: "lead" | "side" }) {
   return (
-    <div className={`magazine-cover magazine-cover--${variant}`} aria-hidden="true">
+    <div className={`magazine-cover magazine-cover--${variant}`} aria-hidden="true" style={coverStyle(story.category)}>
       <span className="magazine-cover-label">{story.category}</span>
       <span className="magazine-cover-title">{story.title}</span>
       <span className="magazine-cover-brand">Fazenda Rodeo Radio</span>

@@ -1,3 +1,4 @@
+import { coverStyle } from "../data/postImages";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import playerCss from "../styles/original-player.css?url";
 import "../styles/blog.css";
@@ -62,7 +63,7 @@ function BlogPage() {
             params={{ slug: lead.slug }}
             className="blog-card blog-card--lead"
           >
-            <div className="blog-card-cover blog-card-cover--lead">
+            <div className="blog-card-cover blog-card-cover--lead" style={coverStyle(lead.category)}>
               <span className="blog-cover-label">{lead.category}</span>
               <span className="blog-cover-title">{lead.tags[0] ?? lead.category}</span>
               <span className="blog-cover-brand">{SITE_NAME}</span>
@@ -85,7 +86,7 @@ function BlogPage() {
               params={{ slug: post.slug }}
               className="blog-card"
             >
-              <div className="blog-card-cover">
+              <div className="blog-card-cover" style={coverStyle(post.category)}>
                 <span className="blog-cover-label">{post.category}</span>
                 <span className="blog-cover-title">{post.tags[0] ?? post.category}</span>
                 <span className="blog-cover-brand">{SITE_NAME}</span>
