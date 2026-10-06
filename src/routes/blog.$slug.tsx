@@ -1,3 +1,4 @@
+import { coverStyle } from "../data/postImages";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import playerCss from "../styles/original-player.css?url";
 import "../styles/blog.css";
@@ -82,7 +83,7 @@ function PostPage() {
             {post.author} · {post.publishedLabel} · {post.readingTime}
           </p>
 
-          <div className="blog-card-cover blog-card-cover--lead">
+          <div className="blog-card-cover blog-card-cover--lead" style={coverStyle(post.category)}>
             <span className="blog-cover-label">{post.category}</span>
             <span className="blog-cover-title">{post.tags[0] ?? post.category}</span>
             <span className="blog-cover-brand">{SITE_NAME}</span>
