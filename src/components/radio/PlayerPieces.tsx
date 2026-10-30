@@ -294,7 +294,12 @@ export function PlayerCard() {
       <StationSegmented />
       <StationStatus />
 
-      <footer>© 2026 - BY PAULO RODEO</footer>
+      <footer className="flex flex-col items-center justify-center gap-2 text-center">
+        <span>© 2026 - BY PAULO RODEO</span>
+        <a href="https://paulo.fazenda.rodeo" target="_blank" rel="noopener noreferrer" aria-label="Paulo Rodeo (abre em nova aba)" className="inline-flex items-center transition-opacity hover:opacity-80">
+          <img src="https://country.fazenda.rodeo/wp-content/uploads/2026/05/pr-logotipo.webp" alt="Paulo Rodeo" className="h-6 w-auto max-w-[170px] object-contain" loading="lazy" decoding="async" />
+        </a>
+      </footer>
     </div>
   );
 }
