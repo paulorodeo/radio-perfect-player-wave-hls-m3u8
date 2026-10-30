@@ -1,14 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import playerCss from "../styles/original-player.css?url";
 
-const BOOTSTRAP_CSS =
-  "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
 import {
   CountryNews,
   DesktopNavigation,
   DynamicBackground,
-  MobileHeader,
-  MobileMenu,
+  MobileNavigation,
   PlayerCard,
   RecentlyPlayed,
 } from "../components/radio/PlayerPieces";
@@ -38,7 +35,6 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://radio.fazenda.rodeo/" },
-      { rel: "stylesheet", href: BOOTSTRAP_CSS },
       { rel: "stylesheet", href: playerCss },
       {
         rel: "preload",
@@ -50,17 +46,6 @@ export const Route = createFileRoute("/")({
         as: "image",
         href: "https://country.fazenda.rodeo/player/play.webp",
       },
-      {
-        rel: "preload",
-        as: "image",
-        href: "https://country.fazenda.rodeo/player/pause.webp",
-      },
-    ],
-    scripts: [
-      {
-        src: "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js",
-        defer: true,
-      },
     ],
   }),
   component: RadioPage,
@@ -70,8 +55,7 @@ function RadioPage() {
   return (
     <>
       <DynamicBackground />
-      <MobileHeader />
-      <MobileMenu />
+      <MobileNavigation />
       <div className="main-container">
         <CountryNews />
         <div
