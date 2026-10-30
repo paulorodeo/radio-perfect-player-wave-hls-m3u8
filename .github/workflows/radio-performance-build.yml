@@ -1,0 +1,24 @@
+name: Radio performance branch - build only
+on:
+  push:
+    branches:
+      - perf/radio-mobile-bootstrap-hls-20261030
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout performance branch
+        uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile
+      - name: Production build (no deploy)
+        run: bun run build
