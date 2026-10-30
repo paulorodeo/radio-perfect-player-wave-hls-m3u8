@@ -89,7 +89,6 @@ function idleTrack(station: StationConfig): NowPlaying {
 export function RadioProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
-  const streamConnectingRef = useRef(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -153,18 +152,10 @@ export function RadioProvider({ children }: { children: ReactNode }) {
       audio.load();
 
       if (target.streamType === "hls") {
-        // Safari/iOS can play HLS natively without downloading hls.js.
-        if (audio.canPlayType("application/vnd.apple.mpegurl")) {
-          audio.src = target.streamUrl;
-          audio.load();
-        } else {
-          const mod = await import("hls.js");
-          if (generationRef.current !== generation) return;
-          const HlsCtor = mod.default;
-          if (!HlsCtor.isSupported()) {
-            setStreamError(UNAVAILABLE_MESSAGE);
-            return;
-          }
+        const mod = await import("hls.js");
+        if (generationRef.current !== generation) return;
+        const HlsCtor = mod.default;
+        if (HlsCtor.isSupported()) {
           const instance = new HlsCtor({
             liveDurationInfinity: true,
             enableWorker: true,
@@ -186,6 +177,12 @@ export function RadioProvider({ children }: { children: ReactNode }) {
           });
           instance.loadSource(target.streamUrl);
           instance.attachMedia(audio);
+        } else if (audio.canPlayType("application/vnd.apple.mpegurl")) {
+          audio.src = target.streamUrl;
+          audio.load();
+        } else {
+          setStreamError(UNAVAILABLE_MESSAGE);
+          return;
         }
       } else {
         audio.src = target.streamUrl;
@@ -211,9 +208,9 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     [startIdle],
   );
 
-  // --- restore the station; media is initialized only after user interaction ---
+  // --- initial mount: restore selection, never autoplay ---
   useEffect(() => {
-    generationRef.current++;
+    const generation = ++generationRef.current;
     let stored: string | null = null;
     try {
       stored = window.localStorage.getItem(STORAGE_KEY);
@@ -223,19 +220,18 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     const initial = stored && getStation(stored).id === stored ? stored : DEFAULT_STATION_ID;
     const target = getStation(initial);
     setSelectedStationId(initial);
-    setNowPlaying(idleTrack(target));
     lastWorkingRef.current = initial;
+    void attachStream(target, generation, false);
 
     return () => {
       generationRef.current++;
-      streamConnectingRef.current = false;
       errorSuppressUntilRef.current = Date.now() + 1200;
       if (hlsRef.current) {
         hlsRef.current.destroy();
         hlsRef.current = null;
       }
     };
-  }, []);
+  }, [attachStream]);
 
   // --- audio element errors ---
   useEffect(() => {
@@ -297,32 +293,14 @@ export function RadioProvider({ children }: { children: ReactNode }) {
     if (ac && ac.state === "suspended") void ac.resume();
   }, []);
 
-  // --- togglePlay: first click prepares the stream, subsequent clicks resume ---
+  // --- togglePlay ---
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
-    if (!audio || streamConnectingRef.current) return;
+    if (!audio) return;
     ensureAudioGraph();
 
     if (audio.paused) {
       setStreamError(null);
-
-      // The initial HTML response must not download a live playlist or hls.js.
-      if (!audio.currentSrc && !audio.getAttribute("src") && !hlsRef.current) {
-        const generation = ++generationRef.current;
-        streamConnectingRef.current = true;
-        void attachStream(getStation(selectedStationId), generation, true)
-          .catch(() => {
-            if (generationRef.current !== generation) return;
-            setStreamError(UNAVAILABLE_MESSAGE);
-            setIsPlaying(false);
-            isPlayingRef.current = false;
-          })
-          .finally(() => {
-            if (generationRef.current === generation) streamConnectingRef.current = false;
-          });
-        return;
-      }
-
       void audio.play().then(
         () => {
           lastWorkingRef.current = selectedStationId;
@@ -342,7 +320,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
       setHideUI(false);
     }
-  }, [attachStream, ensureAudioGraph, selectedStationId, startIdle]);
+  }, [ensureAudioGraph, selectedStationId, startIdle]);
 
   // --- station switching (single source of truth) ---
   const selectStation = useCallback(
@@ -351,7 +329,6 @@ export function RadioProvider({ children }: { children: ReactNode }) {
       if (!target) return;
 
       const generation = ++generationRef.current;
-      streamConnectingRef.current = true;
       const audio = audioRef.current;
 
       if (audio && !audio.paused) audio.pause();
@@ -374,13 +351,7 @@ export function RadioProvider({ children }: { children: ReactNode }) {
       }
 
       ensureAudioGraph();
-      try {
-        await attachStream(target, generation, true);
-      } catch {
-        if (generationRef.current === generation) setStreamError(UNAVAILABLE_MESSAGE);
-      } finally {
-        if (generationRef.current === generation) streamConnectingRef.current = false;
-      }
+      await attachStream(target, generation, true);
     },
     [attachStream, ensureAudioGraph],
   );
