@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 import { LOGO_URL, PAUSE_URL, PLAY_URL, useRadio } from "./RadioContext";
 import { WaveVisualizer } from "./WaveVisualizer";
 import { StationSegmented, StationStatus } from "./StationSelector";
@@ -35,96 +36,115 @@ export function CoverLightbox() {
   );
 }
 
-export function MobileHeader() {
-  return (
-    <header className="header-mobile-externo">
-      <img src={LOGO_URL} alt="Rodeo Country Hits Nashville" />
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasNavbar"
-      >
-        <span className="menu-icon-gold">☰</span>
-      </button>
-    </header>
-  );
-}
-
-export function MobileMenu() {
+export function MobileNavigation() {
   const { news, newsError } = useRadio();
+  const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    drawerRef.current?.querySelector<HTMLButtonElement>(".radio-menu-close")?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(
+        drawerRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href]'
+        ) ?? []
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      triggerRef.current?.focus();
+    };
+  }, [open]);
+
   return (
-    <div
-      className="offcanvas offcanvas-end"
-      tabIndex={-1}
-      id="offcanvasNavbar"
-    >
-      <div className="offcanvas-header">
-        <h5 className="offcanvas-title">MENU</h5>
+    <>
+      <header className="header-mobile-externo">
+        <img src={LOGO_URL} alt="Rodeo Country Hits Nashville" width={130} />
         <button
+          ref={triggerRef}
+          className="navbar-toggler radio-menu-trigger"
           type="button"
-          className="btn-close btn-close-white"
-          data-bs-dismiss="offcanvas"
-        />
-      </div>
-      <div className="offcanvas-body">
-        <ul className="navbar-nav pe-3">
-          <li className="nav-item">
-            <a
-              className="nav-link nav-link-custom"
-              href="https://country.fazenda.rodeo/"
-            >
-              Início
-            </a>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link nav-link-custom" to="/blog">
-              Blog
-            </Link>
-          </li>
-          <li className="nav-item">
-            <a
-              className="nav-link nav-link-custom"
-              href="https://tv.fazenda.rodeo/"
-            >
-              TV
-            </a>
-          </li>
-          <li className="nav-item">
-            <a
-              className="nav-link nav-link-custom"
-              href="https://country.fazenda.rodeo/news/"
-            >
-              Notícias
-            </a>
-          </li>
-          <li className="nav-item">
-            <a
-              className="nav-link nav-link-custom"
-              href="https://podcast.fazenda.rodeo/"
-            >
-              Podcast
-            </a>
-          </li>
-          <li className="nav-item">
-            <a
-              className="nav-link nav-link-custom"
-              href="https://instagram.com/radiofazendarodeo"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Contato
-            </a>
-          </li>
-        </ul>
-        <div className="news-feed-container">
-          <div className="news-header">Últimas Notícias</div>
-          <div id="wp-news-feed">
-            <NewsList news={news} error={newsError} loading={!newsError && news.length === 0} />
+          aria-label="Abrir menu"
+          aria-controls="radio-mobile-menu"
+          aria-expanded={open}
+          onClick={() => setOpen(true)}
+        >
+          <span className="menu-icon-gold" aria-hidden="true">☰</span>
+        </button>
+      </header>
+      {open ? (
+        <div className="radio-menu-layer">
+          <button
+            type="button"
+            className="radio-menu-backdrop"
+            aria-label="Fechar menu"
+            onClick={() => setOpen(false)}
+            tabIndex={-1}
+          />
+          <div
+            ref={drawerRef}
+            id="radio-mobile-menu"
+            className="radio-menu-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="radio-menu-heading"
+          >
+            <div className="radio-menu-header">
+              <h2 id="radio-menu-heading" className="radio-menu-title">MENU</h2>
+              <button
+                type="button"
+                className="radio-menu-close"
+                onClick={() => setOpen(false)}
+                aria-label="Fechar menu"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div className="radio-menu-body">
+              <nav aria-label="Navegação principal">
+                <ul className="radio-menu-links">
+                  <li><a className="radio-menu-link nav-link-custom" href="https://country.fazenda.rodeo/">Início</a></li>
+                  <li><Link className="radio-menu-link nav-link-custom" to="/blog" onClick={() => setOpen(false)}>Blog</Link></li>
+                  <li><a className="radio-menu-link nav-link-custom" href="https://tv.fazenda.rodeo/">TV</a></li>
+                  <li><a className="radio-menu-link nav-link-custom" href="https://country.fazenda.rodeo/news/">Notícias</a></li>
+                  <li><a className="radio-menu-link nav-link-custom" href="https://podcast.fazenda.rodeo/">Podcast</a></li>
+                  <li><a className="radio-menu-link nav-link-custom" href="https://instagram.com/radiofazendarodeo" target="_blank" rel="noreferrer">Contato</a></li>
+                </ul>
+              </nav>
+              <div className="news-feed-container">
+                <div className="news-header">Últimas Notícias</div>
+                <div id="wp-news-feed">
+                  <NewsList news={news} error={newsError} loading={!newsError && news.length === 0} />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      ) : null}
+    </>
   );
 }
 
