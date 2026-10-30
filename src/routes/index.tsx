@@ -33,9 +33,11 @@ export const Route = createFileRoute("/")({
           "Country music 24h, 100% sem comerciais, com notícias do universo country e do rodeio.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://radio.fazenda.rodeo/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "canonical", href: "https://radio.fazenda.rodeo/" },
       { rel: "stylesheet", href: BOOTSTRAP_CSS },
       { rel: "stylesheet", href: playerCss },
       {

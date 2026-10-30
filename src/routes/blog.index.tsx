@@ -16,9 +16,12 @@ export const Route = createFileRoute("/blog/")({
       { property: "og:title", content: `Blog | ${SITE_NAME}` },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://radio.fazenda.rodeo/blog" },
+      { name: "twitter:title", content: `Blog | ${SITE_NAME}` },
+      { name: "twitter:description", content: DESCRIPTION },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "stylesheet", href: playerCss }],
+    links: [{ rel: "stylesheet", href: playerCss }, { rel: "canonical", href: "https://radio.fazenda.rodeo/blog" }],
   }),
   component: BlogPage,
 });
