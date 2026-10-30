@@ -101,6 +101,14 @@ export function MobileMenu() {
           <li className="nav-item">
             <a
               className="nav-link nav-link-custom"
+              href="https://podcast.fazenda.rodeo/"
+            >
+              Podcast
+            </a>
+          </li>
+          <li className="nav-item">
+            <a
+              className="nav-link nav-link-custom"
               href="https://instagram.com/radiofazendarodeo"
               target="_blank"
               rel="noreferrer"
@@ -210,8 +218,8 @@ export function DesktopNavigation() {
         TV
       </a>
       <span className="nav-spacer">|</span>
-      <a href="https://country.fazenda.rodeo/news/" className="nav-link-item">
-        Notícias
+      <a href="https://podcast.fazenda.rodeo/" className="nav-link-item">
+        Podcast
       </a>
     </div>
   );
